@@ -29,8 +29,10 @@ public class Main extends Application{
 
 		
 		
-		//TODO 2: add Flappy
+		//TODO 2: add Flappy   
 
+		
+		
 		
 		
 		//TODO 3: add Button
