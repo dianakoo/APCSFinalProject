@@ -2,6 +2,9 @@ package game;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -27,27 +30,29 @@ public class Main extends Application {
 	private ImageView bkgrd = null;
 	private Node flappy = null;
 
-	private TranslateTransition down;
+	private Timeline down;
 
 	private void addActionEventHandler() {
 		button.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-
-				flappy.translateYProperty().set(0);
-
-				down = new TranslateTransition(Duration.millis(3000), flappy);
-				down.setByY(-1000);
+				down = new Timeline();
 				down.setCycleCount(1);
-
-				down.setInterpolator(new Interpolator() {
-
+				
+				KeyValue kv = new KeyValue(flappy.translateYProperty(), -1000, new Interpolator() {
+					
 					@Override
-					protected double curve(double dt) {
-						return 0.8 * dt - 2 * Math.pow(dt, 2);
+					protected double curve(double t) {
+						// TODO Auto-generated method stub
+						return 0.8 * t - 2 * Math.pow(t, 2);
 					}
 				});
-				down.playFrom(Duration.millis(-500));
+				
+				KeyFrame flap = new KeyFrame(Duration.millis(3000), kv);
+				down.getKeyFrames().add(flap);
+				down.setAutoReverse(false);
+				down.play();
+				
 			}
 		});
 	}
@@ -56,19 +61,25 @@ public class Main extends Application {
 		root.onMouseClickedProperty().set(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				down.stop();
-				down = new TranslateTransition(Duration.millis(3000), flappy);
-				down.setByY(-1000);
+				down = new Timeline();
 				down.setCycleCount(1);
-
-				down.setInterpolator(new Interpolator() {
-
+				
+				KeyValue kv = new KeyValue(flappy.translateYProperty(), -1000, new Interpolator() {
+					
 					@Override
-					protected double curve(double dt) {
-						return 0.8 * dt - 2 * Math.pow(dt, 2);
+					protected double curve(double t) {
+						// TODO Auto-generated method stub
+						double y = 0.8 * t - 2 * Math.pow(t, 2);
+						
+						return y;
 					}
 				});
+				
+				KeyFrame flap = new KeyFrame(Duration.millis(3000), kv);
+				down.getKeyFrames().add(flap);
+				down.setAutoReverse(false);
 				down.play();
+				
 
 				String url = getClass().getResource("/flap.mp3").toString();
 				Media m = new Media(url);
